@@ -6,6 +6,7 @@
         <meta name="description" content="Catalogue de véhicules Glinche Automobiles">
 
         <title>Glinche Automobiles</title>
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>

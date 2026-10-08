@@ -33,7 +33,6 @@ class VehicleResource extends JsonResource
             'price' => $this->price ?? $this->partner_price ?? $this->merchant_price,
             'vat_reclaimable' => $this->vat_reclaimable,
             'picture' => $mainPicture?->url,
-            'source_url' => $this->source_url,
             'availability_date' => $this->availability_date?->toIso8601String(),
         ];
     }
