@@ -1,66 +1,197 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Glinche Automobiles - catalogue de véhicules
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+J’ai réalisé cette application dans le cadre d’un exercice technique full-stack. Le but est de récupérer les véhicules fournis par l’API partenaire Glinche Automobiles, de les enregistrer dans PostgreSQL puis de les afficher dans un catalogue responsive.
 
-## About Laravel
+## Fonctionnalités
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- authentification auprès de l’API partenaire Glinche ;
+- synchronisation des véhicules dans PostgreSQL ;
+- mise à jour des véhicules déjà présents ;
+- désactivation des véhicules disparus du catalogue partenaire ;
+- conservation des photos et des principales caractéristiques ;
+- affichage responsive du catalogue ;
+- filtrage dynamique par marque ;
+- thèmes clair et sombre ;
+- gestion des états de chargement, d’erreur et de résultat vide ;
+- API interne Laravel pour les véhicules et les marques.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Technologies
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.2 et Laravel 12 ;
+- Vue.js 3 et Vite ;
+- Bootstrap 5 et Bootstrap Icons ;
+- PostgreSQL ;
+- PHPUnit.
 
-## Learning Laravel
+## Prérequis
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP 8.2 ou supérieur avec les extensions `pdo_pgsql`, `pgsql`, `intl` et `pdo_sqlite` ;
+- Composer ;
+- Node.js et npm ;
+- PostgreSQL.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Installation
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Cloner le dépôt puis installer les dépendances :
 
-## Laravel Sponsors
+```bash
+git clone https://github.com/LmaoDM/Glinche_Automobile_Malo_DM.git
+cd Glinche_Automobile_Malo_DM
+composer install
+npm install
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Créer le fichier d’environnement et générer la clé Laravel :
 
-### Premium Partners
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Sous Windows PowerShell, la copie peut être effectuée avec :
 
-## Contributing
+```powershell
+Copy-Item .env.example .env
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Créer une base PostgreSQL nommée `glinche_automobile`, puis renseigner dans `.env` les paramètres de connexion et les identifiants transmis pour l’API partenaire :
 
-## Code of Conduct
+```dotenv
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=glinche_automobile
+DB_USERNAME=postgres
+DB_PASSWORD=
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+GLINCHE_API_BASE_URL=https://marketplace-dev.glinche-automobiles.com/api
+GLINCHE_API_EMAIL=
+GLINCHE_API_PASSWORD=
+```
 
-## Security Vulnerabilities
+Les identifiants de l’API ne doivent jamais être ajoutés au dépôt Git.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Créer les tables avec les migrations Laravel :
 
-## License
+```bash
+php artisan migrate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Le fichier [`database/schema.sql`](database/schema.sql) décrit également le schéma PostgreSQL. Il sert de référence et ne doit pas être exécuté après les migrations, au risque de tenter de recréer les mêmes tables.
+
+## Synchronisation du catalogue
+
+Importer ou actualiser les véhicules avec :
+
+```bash
+php artisan vehicles:sync
+```
+
+La synchronisation :
+
+1. s’authentifie auprès de l’API Glinche ;
+2. récupère les annonces disponibles ;
+3. crée ou actualise les marques, modèles, véhicules et photos ;
+4. désactive les véhicules qui ne sont plus retournés par l’API ;
+5. enregistre le résultat dans la table `sync_runs` ;
+6. ferme la session auprès de l’API partenaire.
+
+La commande peut être relancée sans créer de doublons : la référence externe du véhicule sert d’identifiant unique de synchronisation.
+
+## Lancement en développement
+
+Lancer Laravel dans un premier terminal :
+
+```bash
+php artisan serve
+```
+
+Lancer Vite dans un second terminal :
+
+```bash
+npm run dev
+```
+
+L’application est ensuite disponible à l’adresse [http://127.0.0.1:8000](http://127.0.0.1:8000).
+
+Pour produire les fichiers optimisés :
+
+```bash
+npm run build
+```
+
+## API interne
+
+| Méthode | Endpoint | Description |
+| --- | --- | --- |
+| `GET` | `/api/vehicles` | Retourne les véhicules actifs |
+| `GET` | `/api/vehicles?brand=Renault` | Filtre les véhicules par marque |
+| `GET` | `/api/brands` | Retourne les marques possédant au moins un véhicule actif |
+
+## Tests et qualité du code
+
+Exécuter les tests :
+
+```bash
+php artisan test
+```
+
+Les tests utilisent SQLite en mémoire et ne modifient donc pas la base PostgreSQL locale. Ils couvrent notamment :
+
+- le catalogue et son filtre par marque ;
+- l’authentification simulée auprès de l’API partenaire ;
+- l’import des véhicules et de leurs photos ;
+- la mise à jour des véhicules existants ;
+- la désactivation des véhicules absents d’une synchronisation ;
+- l’enregistrement d’une synchronisation échouée.
+
+Vérifier le formatage PHP :
+
+```bash
+vendor/bin/pint --test
+```
+
+Appliquer automatiquement le formatage :
+
+```bash
+vendor/bin/pint
+```
+
+## Structure principale
+
+```text
+app/
+├── Console/Commands/SyncVehicles.php
+├── Http/Controllers/Api/
+├── Http/Resources/VehicleResource.php
+├── Models/
+└── Services/
+    ├── GlincheApiClient.php
+    └── VehicleSynchronizer.php
+
+resources/
+├── css/app.css
+└── js/App.vue
+
+database/
+├── migrations/
+└── schema.sql
+
+tests/Feature/
+├── Api/VehicleCatalogTest.php
+└── Services/VehicleSynchronizerTest.php
+```
+
+## Mes choix techniques
+
+J’ai choisi d’enregistrer les véhicules dans PostgreSQL plutôt que d’appeler directement l’API à chaque chargement de la page. Le catalogue reste ainsi accessible à partir des dernières données importées, même si l’API partenaire rencontre temporairement un problème.
+
+J’ai séparé les appels à l’API dans `GlincheApiClient` et l’enregistrement des données dans `VehicleSynchronizer`. Cela m’a aussi permis de tester la synchronisation avec de fausses réponses HTTP sans utiliser les vrais identifiants pendant les tests.
+
+L’import est effectué dans une transaction. Si une erreur se produit pendant l’enregistrement, les modifications en cours sont annulées pour éviter de conserver un catalogue incomplet.
+
+La synchronisation des véhicules se lance manuellement avec la commande `php artisan vehicles:sync`. Avec plus de temps, j’aurais pu l’automatiser à intervalles réguliers avec le planificateur de tâches de Laravel.
+
+## Avec plus de temps
+
+J’aurais notamment ajouté une recherche par modèle, davantage de filtres et une page de détail pour chaque véhicule. J’aurais également complété les tests du frontend Vue et automatisé la synchronisation du catalogue.
