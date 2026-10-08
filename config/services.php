@@ -28,6 +28,12 @@ return [
         'key' => env('RESEND_KEY'),
     ],
 
+    'glinche' => [
+        'base_url' => env('GLINCHE_API_BASE_URL', 'https://marketplace-dev.glinche-automobiles.com/api'),
+        'email' => env('GLINCHE_API_EMAIL'),
+        'password' => env('GLINCHE_API_PASSWORD'),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
